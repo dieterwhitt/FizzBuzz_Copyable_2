@@ -11,14 +11,41 @@
 // print n, Fizz, Buzz, or FizzBuzz
 // terminate
 
+.section .data
+fizz: .ascii "Fizz"
+buzz: .ascii "Buzz"
+fizzbuzz: .ascii "FizzBuzz"
+sp: .ascii " "
+
+.section .text
 .global _start
 .align 2
 
 _start:
     b _terminate
 
+// gets command line arg and converts to int
+// exits w/ error if invalid
+// exits w/ error if >1 args
+_loadarg:
+    ret
+
+// prints string
+_prints:
+    ret
+
+// prints integer
+_printi:
+    ret
+
+// exit program
 _terminate:
-    // exit program
     mov x0, #0
+    mov x16, #1
+    svc 0
+
+// exit with error code 1
+_error:
+    mov x0, #1
     mov x16, #1
     svc 0
