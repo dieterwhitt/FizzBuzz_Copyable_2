@@ -1,6 +1,6 @@
 # FizzBuzz Copyable 2
 
-Popular brain teaser [FizzBuzz](https://en.wikipedia.org/wiki/Fizz_buzz) implemented in ARM64 for the XNU kernel (MacOS).
+Popular brain teaser [FizzBuzz](https://en.wikipedia.org/wiki/Fizz_buzz) implemented in ARM64 Assembly for the XNU kernel (MacOS).
 
 ## Compatibility
 
