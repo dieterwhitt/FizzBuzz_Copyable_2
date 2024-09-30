@@ -25,9 +25,9 @@ _start:
     bl _readn
     //mov x10, #10
     //mov x15, #10
-    mov x15, x10
-    bl _printi
-    //bl _iterate
+    //mov x15, x10
+    //bl _printi
+    bl _iterate
     b _terminate
 
 // attempts to read argv[1] and parses to int, which is stored in x10
@@ -67,6 +67,8 @@ _readn:
 _iterate:
     // 15 is i
     mov x15, #1
+    mov x17, lr // store return address now because will be branching soon
+    cbz x10, _error // terminate if input was 0
     loop:
         mov x14, #15 // fizzbuzz divisor
         bl _modulo // get remainder
@@ -92,7 +94,8 @@ _iterate:
             add x15, x15, #1 // increment index
             cmp x15, x10 
             ble loop // iterate while index <= n
-    ret
+    // return to original caller
+    br x17
 
 // modulo operator
 // x15 % x14 -> x13
