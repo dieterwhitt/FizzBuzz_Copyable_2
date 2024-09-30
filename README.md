@@ -14,13 +14,15 @@ Confirm that your device is using ARM64 on a XNU kernel (darwin).
 
 ## Compliation
 
+Compile using clang or assembler.
+
 #### Clang:
 
 ```bash
 clang fizzbuzz.s -o fizzbuzz -e _start
 ```
 
-#### Assembler
+#### Assembler:
 
 ```bash
 as -o fizzbuzz.o fizzbuzz.s
