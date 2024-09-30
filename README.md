@@ -1,6 +1,6 @@
 # FizzBuzz Copyable 2
 
-Popular problem FizzBuzz implemented in ARM64 for the XNU kernel (MacOS).
+Popular brain-teaser FizzBuzz implemented in ARM64 for the XNU kernel (MacOS).
 
 ## Compatibility
 
