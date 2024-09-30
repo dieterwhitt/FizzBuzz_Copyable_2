@@ -33,4 +33,4 @@ ld -o fizzbuzz fizzbuzz.o
 ./fizzbuzz n
 ```
 
-Where n is an integer.
+Where n is a positive integer (below 32-bit limit).
