@@ -10,7 +10,7 @@ First ensure that your device architecture is compatible with the program:
 uname -a
 ```
 
-Confirm that your device is using ARM64 on a XNU kernel (darwin).
+Confirm that your device is using ARM64 on the XNU kernel (Darwin).
 
 ## Compliation
 
