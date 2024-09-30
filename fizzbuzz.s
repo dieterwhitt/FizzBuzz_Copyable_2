@@ -4,13 +4,6 @@
 // list of all syscalls:
 // https://opensource.apple.com/source/xnu/xnu-1504.3.12/bsd/kern/syscalls.master 
 
-// steps:
-// convert command line arg to number n
-// loop from 1 to n
-// create modulus operator to determine divisibility by 3 and 5
-// print n, Fizz, Buzz, or FizzBuzz
-// terminate
-
 fizz: .asciz "Fizz"
 buzz: .asciz "Buzz"
 fizzbuzz: .asciz "FizzBuzz"
@@ -21,19 +14,17 @@ newline: .asciz "\n"
 .global _start
 .align 2
 
+// entry
 _start:
     bl _readn
-    //mov x10, #10
-    //mov x15, #10
-    //mov x15, x10
-    //bl _printi
     bl _iterate
     b _terminate
 
 // attempts to read argv[1] and parses to int, which is stored in x10
 _readn:
-    cmp x0, #1 // x0 has argument count
-    ble _error // exit with error
+    cmp x0, #2 // x0 has argument count
+    blt _error // exit with error (<2 args)
+    bgt _error // error (>2 args)
     // now, x1 contains offset from sp to argv[0]
     // add 8 bytes to get argv[1]
     add x1, x1, #8
@@ -56,7 +47,6 @@ _readn:
         bgt _error
 
         sub w2, w2, '0' // convert to int
-        //sxtw x2, w2 // convert 32 bit to 64
         mul x10, x10, x9 // multiply output by 10
         add x10, x10, x2
         b convert_loop // loop again
@@ -182,7 +172,7 @@ _printi:
         add  sp, sp, #16 // restore stack
         ret
 
-// exit program
+// print newline and exit program 
 _terminate:
     mov     x0, #1 // stdout
     adr     x1, newline
