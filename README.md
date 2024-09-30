@@ -26,7 +26,7 @@ clang fizzbuzz.s -o fizzbuzz -e _start
 
 ```bash
 as -o fizzbuzz.o fizzbuzz.s
-ld -o fizzbuzz fizzbuzz.o
+ld -o fizzbuzz fizzbuzz.o -e _start
 ```
 
 ## Execution
