@@ -33,4 +33,11 @@ ld -o fizzbuzz fizzbuzz.o
 ./fizzbuzz n
 ```
 
-Where n is a positive integer (below 32-bit limit).
+Where n is a positive integer (below the 32-bit limit).
+
+#### Example
+
+```bash
+./fizzbuzz 15
+1 2 Fizz 4 Buzz Fizz 7 8 Fizz Buzz 11 Fizz 13 14 FizzBuzz
+```
