@@ -21,7 +21,8 @@ errormsg: .asciz "Error running the program. Refer to README.md for execution in
 .align 2
 
 _start:
-    bl _readn
+    //bl _readn
+    mov x10, #10
     bl _iterate
     b _terminate
 
@@ -31,8 +32,10 @@ _readn:
     ble _error // exit with error
     // now, x1 contains offset from sp to argv[0]
     // add 8 bytes to get argv[1]
-    add x1, sp, #8
-    // now have address of null terminated string n in x1
+    add x1, x1, #8
+    // currently x1 is a pointer to a pointer to a string. need to dereference:
+    ldr x3, [x1]
+    // now have address of null terminated string n in x3
     // need to iterate 1 byte at a time. check if it's an int
     // (between #'0' and #'9')
     // each iteration, multiplying the result by 10, then adding the digit
@@ -40,7 +43,7 @@ _readn:
     mov x10, #0 // output val
     mov x9, #10 // base 10 
     convert_loop:
-        ldrb w2, [x1], #1 // reads 1 byte from x1 into w2 and shift x1
+        ldrb w2, [x3], #1 // reads 1 byte from x1 into w2 and shift x1
         cbz w2, convert_done // finish loop on null character
         // error if char not a number
         cmp w2, '0'
@@ -58,7 +61,7 @@ _readn:
 // performs fizzbuzz operation with n in x10
 _iterate:
     // 15 is i
-    mov x15, #0
+    mov x15, #1
     loop:
         mov x14, #15 // fizzbuzz divisor
         bl _modulo // get remainder
@@ -75,12 +78,15 @@ _iterate:
         cmp x13, #0
         beq _printbuzz
 
+        // else: printi
+        bl _printi
+
         fi1: // end of if/elif/else
             bl _printsp // print space
 
-            cmp x15, x10 
-            bne loop // iterate while index not at n
             add x15, x15, #1 // increment index
+            cmp x15, x10 
+            ble loop // iterate while index <= n
     ret
 
 // modulo operator
@@ -136,7 +142,8 @@ _printsp:
 // prints integer
 // integer in x15
 _printi:
-    b fi1
+    
+    ret
 
 // exit program
 _terminate:
