@@ -22,9 +22,10 @@ newline: .asciz "\n"
 .align 2
 
 _start:
-    //bl _readn
-    mov x10, #10
-    mov x15, #10
+    bl _readn
+    //mov x10, #10
+    //mov x15, #10
+    mov x15, x10
     bl _printi
     //bl _iterate
     b _terminate
@@ -46,7 +47,7 @@ _readn:
     mov x10, #0 // output val
     mov x9, #10 // base 10 
     convert_loop:
-        ldrb w2, [x3], #1 // reads 1 byte from x1 into w2 and shift x1
+        ldrb w2, [x3], #1 // reads 1 byte from the string x3 references into w2 and shift x3
         cbz w2, convert_done // finish loop on null character
         // error if char not a number
         cmp w2, '0'
@@ -58,6 +59,7 @@ _readn:
         //sxtw x2, w2 // convert 32 bit to 64
         mul x10, x10, x9 // multiply output by 10
         add x10, x10, x2
+        b convert_loop // loop again
     convert_done:
         ret
 
