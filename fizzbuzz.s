@@ -140,7 +140,7 @@ _printsp:
 // prints integer (not null terminated)
 // integer in x15
 _printi:
-    sub sp, sp, #16 // allocate 16 bytes of stack space
+    sub sp, sp, #32 // allocate 32 bytes of stack space
     mov x12, x15 // preserve x15, operations will be done on x12
     mov x11, #0 // byte counter
     mov x9, sp // insertion pointer (end of buffer)
@@ -169,7 +169,7 @@ _printi:
         mov  x16, #4
         svc  #0
 
-        add  sp, sp, #16 // restore stack
+        add  sp, sp, #32 // restore stack
         ret
 
 // print newline and exit program 
