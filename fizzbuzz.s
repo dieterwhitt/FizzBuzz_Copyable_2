@@ -16,6 +16,7 @@ buzz: .asciz "Buzz"
 fizzbuzz: .asciz "FizzBuzz"
 wspace: .asciz " "
 errormsg: .asciz "Error running the program. Refer to README.md for execution instructions.\n"
+newline: .asciz "\n"
 
 .global _start
 .align 2
@@ -23,7 +24,9 @@ errormsg: .asciz "Error running the program. Refer to README.md for execution in
 _start:
     //bl _readn
     mov x10, #10
-    bl _iterate
+    mov x15, #10
+    bl _printi
+    //bl _iterate
     b _terminate
 
 // attempts to read argv[1] and parses to int, which is stored in x10
@@ -52,7 +55,7 @@ _readn:
         bgt _error
 
         sub w2, w2, '0' // convert to int
-        sxtw x2, w2 // convert 32 bit to 64
+        //sxtw x2, w2 // convert 32 bit to 64
         mul x10, x10, x9 // multiply output by 10
         add x10, x10, x2
     convert_done:
@@ -139,38 +142,49 @@ _printsp:
     svc     0
     ret
 
-// prints integer
+// prints integer (not null terminated)
 // integer in x15
-// from stack overflow
 _printi:
-    sub  sp, sp, #16 //allocate 16 bytes of stack space
-    mov x12, x15
+    sub sp, sp, #16 // allocate 16 bytes of stack space
+    mov x12, x15 // preserve x15, operations will be done on x12
+    mov x11, #0 // byte counter
+    mov x9, sp // insertion pointer (end of buffer)
+    add x9, x9, #16
     printNumber:
-        mov  x16, #10                  /* apparently need this for udiv/msub */
-        udiv x14, x12, x16             /* x12 is the number I defined above, bc idk what registers are save to use (e.g. when syscall 64, print, happens, 0-8 are used) */
-        msub x13, x14, x16, x12        /* XXX fix unrelated bug */
-        sub  x12, x12, x13             /* x13 is what above is digit, x12 is number */
-        udiv x12, x12, x16
-        add  x13, x13, #48             /* digit to string, possible error source 1 */
+        mov  x16, #10 // store quotient
+        udiv x14, x12, x16
+        msub x13, x14, x16, x12 // get remainder (digit) into x13
+        sub  x12, x12, x13
+        udiv x12, x12, x16 // update 12 for next iteration
+        add  x13, x13, '0' // digit to string
 
-        strb w13, [sp]                 /* XXX Store the low byte of x13/w13 in memory at address sp */
+        sub x9, x9, #1 // shift insertion point left
+        strb w13, [x9] // put byte in buffer insertion point
+        add x11, x11, #1 // update byte counter
 
-        mov  x0,  #1                   /* the print part */
-        mov  x1,  sp                   /* XXX x1 points to the byte to be written */
-        mov  x2,  #1
-        mov  w8,  #64
-        svc  #0
-
-        cmp  x12, #0                   /* the loop part */
-        beq  exit                      /* genereric exit method I left out */
+        cmp  x12, #0
+        beq  exit // exit loop
         b    printNumber
 
-    exit:                                  /* XXX */
-        add  sp, sp, #16               /* XXX restore stack before returning */
-        ret                            /* XXX */
+    exit:
+        // print buffer
+        mov  x0, #1
+        mov  x1, x9 // insertion point is start of string
+        mov  x2, x11 // x11 is length
+        mov  x16, #4
+        svc  #0
+
+        add  sp, sp, #16 // restore stack
+        ret
 
 // exit program
 _terminate:
+    mov     x0, #1 // stdout
+    adr     x1, newline
+    mov     x2, #2
+    mov     x16, #4
+    svc     0
+
     mov x0, #0
     mov x16, #1
     svc 0
