@@ -141,9 +141,33 @@ _printsp:
 
 // prints integer
 // integer in x15
+// from stack overflow
 _printi:
-    
-    ret
+    sub  sp, sp, #16 //allocate 16 bytes of stack space
+    mov x12, x15
+    printNumber:
+        mov  x16, #10                  /* apparently need this for udiv/msub */
+        udiv x14, x12, x16             /* x12 is the number I defined above, bc idk what registers are save to use (e.g. when syscall 64, print, happens, 0-8 are used) */
+        msub x13, x14, x16, x12        /* XXX fix unrelated bug */
+        sub  x12, x12, x13             /* x13 is what above is digit, x12 is number */
+        udiv x12, x12, x16
+        add  x13, x13, #48             /* digit to string, possible error source 1 */
+
+        strb w13, [sp]                 /* XXX Store the low byte of x13/w13 in memory at address sp */
+
+        mov  x0,  #1                   /* the print part */
+        mov  x1,  sp                   /* XXX x1 points to the byte to be written */
+        mov  x2,  #1
+        mov  w8,  #64
+        svc  #0
+
+        cmp  x12, #0                   /* the loop part */
+        beq  exit                      /* genereric exit method I left out */
+        b    printNumber
+
+    exit:                                  /* XXX */
+        add  sp, sp, #16               /* XXX restore stack before returning */
+        ret                            /* XXX */
 
 // exit program
 _terminate:
