@@ -32,7 +32,7 @@ _readn:
     ldr x3, [x1]
     // now have address of null terminated string n in x3
     // need to iterate 1 byte at a time. check if it's an int
-    // (between #'0' and #'9')
+    // (between '0' and '9')
     // each iteration, multiplying the result by 10, then adding the digit
     // stopping at null byte
     mov x10, #0 // output val
@@ -93,13 +93,6 @@ _modulo:
     udiv x12, x15, x14 // quotient stored in x12
     mul x11, x12, x14 // multiply by smaller number and store in 11
     sub x13, x15, x11 // x15 - x11 yields remainder
-    ret
-
-// gets command line arg and converts to int
-// loads to x15
-// exits w/ error if invalid
-// exits w/ error if >1 args
-_loadarg:
     ret
 
 // prints fizzbuzz
